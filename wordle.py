@@ -28,7 +28,7 @@ words_already_tried = []
 
 def user_input():
     while True:
-        x = input("enter your 5 letter guess(all letters only): ").lower()
+        x = input("enter your 5 letter guess(all letters only): ").strip().lower()
         if len(x) != 5:
             print("your guess contains more than 5 characters")
             continue
@@ -45,8 +45,8 @@ def user_input():
         return x
 
 def get_random_word():
-    response = requests.get("https://scipython.com/static/media/uploads/blog/wordle/common-5-words.txt")
-    return random.choice(response.text.split())
+    five_letter_words = [word for word in word_list if len(word) == 5 and word.isalpha()]
+    return random.choice(five_letter_words)
 
 def print_color(letter, col):
     if col == "g":
@@ -57,6 +57,8 @@ def print_color(letter, col):
         print(Fore.RED + letter, end="")
 
 def check_what_contains_check_whatis(guess, answer):
+    guess = guess.lower()
+    answer = answer.lower()
     for i in range(5):
         if guess[i] == answer[i]:
             print_color(guess[i], "g")
@@ -65,13 +67,28 @@ def check_what_contains_check_whatis(guess, answer):
         else:
             print_color(guess[i], "r")
 
-print("Welcome to wordle")
-answer = get_random_word()
-
-for i in range(5):
-    print("\nno of attempts left:", i)
-    guess = user_input()
-    check_what_contains_check_whatis(guess, answer)
-    if guess == answer:
-        print("sucess")
+while True:
+    print("""
+Welcome to Wordle
+- Guess the 5-letter word.
+- Letters in the correct position will be green.
+- Letters in the word but in the wrong position will be yellow.
+- Letters not in the word will be red.
+- You have 5 attempts.
+""")
+    answer = get_random_word()
+    for i in range(5):
+        print("\nno of attempts left:", 5 - i)
+        guess = user_input()
+        check_what_contains_check_whatis(guess, answer)
+        if guess == answer:
+            print(f"you have guessed the word '{answer}' correctly")
+            break
+    else:
+        print("you lost, the correct word was:",answer)
+    
+    play_again = input("do you want to play again? (yes/no): ").lower()
+    if play_again != "yes":
+        print("bye")
         break
+    words_already_tried.clear()
