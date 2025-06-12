@@ -85,7 +85,7 @@ Welcome to Wordle
             print(f"you have guessed the word '{answer}' correctly")
             break
     else:
-        print("you lost, the correct word was:",answer)
+        print("\nyou lost, the correct word was:",answer)
     
     play_again = input("do you want to play again? (yes/no): ").lower()
     if play_again != "yes":
