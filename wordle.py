@@ -55,7 +55,7 @@ def print_color(letter, col):
         print(Fore.YELLOW + letter, end="")
     elif col == "r":
         print(Fore.RED + letter, end="")
-
+"""
 def check_what_contains_check_whatis(guess, answer):
     guess = guess.lower()
     answer = answer.lower()
@@ -66,6 +66,33 @@ def check_what_contains_check_whatis(guess, answer):
             print_color(guess[i], "y")
         else:
             print_color(guess[i], "r")
+"""
+def check_guess(guess, answer):
+    guess = guess.lower()
+    answer = answer.lower()
+    remaining = list(answer)
+
+    # First pass: greens
+    colors = [''] * 5
+    for i in range(5):
+        if guess[i] == answer[i]:
+            colors[i] = 'g'
+            remaining[i] = None  # remove it so we don't reuse it for yellows
+
+    # Second pass: yellows and reds
+    for i in range(5):
+        if colors[i] == '':
+            if guess[i] in remaining:
+                colors[i] = 'y'
+                # mark off the first occurrence so that further duplicates won't match
+                remaining[remaining.index(guess[i])] = None
+            else:
+                colors[i] = 'r'
+
+    # Print with colors
+    for i in range(5):
+        print_color(guess[i], colors[i])
+    print()  # newline after the guess
 
 while True:
     print("""
@@ -74,11 +101,11 @@ Welcome to Wordle
 - Letters in the correct position will be green.
 - Letters in the word but in the wrong position will be yellow.
 - Letters not in the word will be red.
-- You have 5 attempts.
+- You have 6 attempts.
 """)
     answer = get_random_word()
-    for i in range(5):
-        print("\nno of attempts left:", 5 - i)
+    for i in range(6):
+        print("\nno of attempts left:", 6 - i)
         guess = user_input()
         check_what_contains_check_whatis(guess, answer)
         if guess == answer:
